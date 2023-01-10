@@ -13,9 +13,13 @@ public interface UserService {
 
     Response addUser(UserDto userDto, SendPasswordDto sendPasswordDto);
 
-    public List<UserDto> fethAll(UserDto userDto);
+    List<UserDto> fethAll(UserDto userDto);
 
-    public Response getById(Integer id);
+    Response getById(Integer id);
 
     Response logInUser(LoginDto loginDto);
+
+    Response deleateUser(Integer id);
+
+    ResponseEntity<Response> upadateUser(UserDto uderDto);
 }

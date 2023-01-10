@@ -1,9 +1,10 @@
 package com.inventory.management.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -20,4 +21,10 @@ public class SendPassword {
 
     @Column(name="password")
     private String password;
+
+//    @OneToOne(mappedBy = "sendPassword")
+//    private User user;
+
+//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sendPassword")
+//    private User user;
 }

@@ -4,14 +4,12 @@ import com.inventory.management.config.Response;
 import com.inventory.management.dto.LoginDto;
 import com.inventory.management.dto.SendPasswordDto;
 import com.inventory.management.dto.UserDto;
-import com.inventory.management.entity.User;
 import com.inventory.management.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -39,5 +37,10 @@ public class UserController {
     @PostMapping("/login")
     public Response logInUser(@RequestBody LoginDto loginDto){
         return userService.logInUser(loginDto);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public Response deleteUser(@PathVariable Integer id){
+        return userService.deleateUser(id);
     }
 }

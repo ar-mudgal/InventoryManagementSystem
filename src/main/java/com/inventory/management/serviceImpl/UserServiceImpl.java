@@ -1,5 +1,6 @@
 package com.inventory.management.serviceImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inventory.management.config.Response;
 import com.inventory.management.dto.LoginDto;
 import com.inventory.management.dto.SendPasswordDto;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.tags.form.OptionsTag;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.*;
 
 @Service
@@ -45,8 +47,6 @@ public class UserServiceImpl implements UserService {
         user.setGender(userDto.getGender());
         user.setPincode(userDto.getPincode());
         user.setPassword(sendPasswordDto.getPassword());
-//        UUID uuid = UUID.randomUUID();
-//        user.setPassword(uuid.toString());
         user.setAddress(userDto.getAddress());
         user.setRole(role);
         userRepository.save(user);
@@ -89,12 +89,15 @@ public class UserServiceImpl implements UserService {
         return new Response("user fond successfully", dt,HttpStatus.OK);
     }
 
+    @Autowired
+    ObjectMapper mapper;
     @Override
     public Response logInUser(LoginDto loginDto) {
-       User user = userRepository.findByEmailAndPassword(loginDto.getEmail(),loginDto.getPassword());
+        Response response = new Response();
+       User user = userRepository.findByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
        UserDto dto = new UserDto();
        if(user==null){
-           return new Response("invalid crediantials login id or password not match",HttpStatus.BAD_REQUEST);
+           return new Response("invalid credentials login id or password not match",HttpStatus.BAD_REQUEST);
        }
        dto.setId(user.getId());
        dto.setName(user.getName());
@@ -104,7 +107,32 @@ public class UserServiceImpl implements UserService {
        dto.setPassword(user.getPassword());
        dto.setGender(user.getGender());
        dto.setEmail(user.getEmail());
+//       dto.setRole(user.getRole());
+
+       try {
+           mapper.writeValueAsString(dto);
+       }
+       catch (Exception e){
+           System.out.println(e);
+       }
         return new Response("Login successfully", dto,HttpStatus.OK);
+    }
+
+    @Override
+    public Response deleateUser(Integer id) {
+        Optional<User> usrOptional = userRepository.findById(id);
+        if(usrOptional.isPresent()){
+            userRepository.deleteById(id);
+            return new Response("user deleted Successfully", id, HttpStatus.OK);
+        }
+        return new Response("User not found", HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public ResponseEntity<Response> upadateUser(UserDto uderDto) {
+//        List<user> userList = new List<user>() {
+//        }
+        return null;
     }
 
 

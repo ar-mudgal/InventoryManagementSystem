@@ -4,5 +4,5 @@ import com.inventory.management.config.Response;
 
 public interface SendPasswordService {
 
-    public Response sendPassword(String email);
+    Response sendPassword(String email);
 }

@@ -1,7 +1,8 @@
 package com.inventory.management.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -44,4 +45,13 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role", referencedColumnName = "id")
     private Role role;
+
+//    @OneToOne(cascade = CascadeType.ALL )
+//    @JoinColumn(insertable = true, updatable = true)
+//    private SendPassword sendPasswordpass;
+
+//    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+//    @JoinColumn(name="password", insertable = false, updatable = false)
+//    private SendPassword sendPassword;
+
 }

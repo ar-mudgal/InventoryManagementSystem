@@ -1,8 +1,9 @@
 package com.inventory.management.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.boot.autoconfigure.web.WebProperties;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name="role_table")

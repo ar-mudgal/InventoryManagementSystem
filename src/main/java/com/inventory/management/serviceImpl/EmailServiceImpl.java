@@ -21,12 +21,82 @@ import java.util.concurrent.Future;
 @Slf4j
 public class EmailServiceImpl implements EmailService {
 
+//    @Override
+//    public void sendEmail(String subject, String message, String to) {
+//
+//        String from = "arun.mudgal@sastechstudio.com";
+//        //variable for mail
+//        String host = "smtp.gmail.com";
+//        //get the system property
+//        Properties properties = System.getProperties();
+//        System.out.println("Properties " + properties);
+//        //setting import information to properties object
+//
+//        //host set
+//
+//        Properties props = new Properties();
+//        props.put("mail.smtp.host", host);
+//        props.put("mail.transport.protocol", "smtp");
+//        props.put("mail.smtp.port", 587);
+//        props.put("mail.smtp.starttls.enable", "true");
+//        props.put("mail.smtp.auth", "true");
+//        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+//        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+//            protected PasswordAuthentication getPasswordAuthentication() {
+//                return new PasswordAuthentication("arun.mudgal@sastechstudio.com", "Arun@1234");
+//            }
+//        });
+//
+//        //step 1 to get the session object
+//        javax.mail.Session sessio = javax.mail.Session.getInstance(properties, new Authenticator() {
+//            @Override
+//            protected javax.mail.PasswordAuthentication getPasswordAuthentication(){
+//                return new javax.mail.PasswordAuthentication("arun.mudgal@sastechstudio.com", "Arun@1234");
+//            }
+//        });
+//
+//        session.setDebug(true);
+//        //step 2 : compose the message [text, multi media]
+//        MimeMessage m = new MimeMessage(session);
+//        try {
+//            //from email
+//            m.setFrom(from);
+//            //adding recipient to message
+//            m.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+//
+//            //adding subject to message
+//            m.setSubject(subject);
+//
+//            //adding text to message
+//            m.setText(message);
+//
+//
+//            //send
+//
+//            //step 3 send the message using Transport class
+//            Transport.send(m);
+//
+//            System.out.println("send success.............");
+//            //f = true;
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
+
+
+
+
+
+
     static final String FROM = "care@aiqahealth.com";
     static final String FROMNAME = "aiqa Resellers";
 
     static final String CONFIGSET = "ConfigSet";
 
-    static final String HOST = "email-smtp.ap-south-1.amazonaws.com";
+    static final String HOST = "email-smtp";
 
     static final int PORT = 587;
     @Override
@@ -43,39 +113,34 @@ public class EmailServiceImpl implements EmailService {
         //host set
 
         Properties props = new Properties();
-        props.put("mail.smtp.host", host);
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.port", 587);
-        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
-        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.starttls.enable", "true");
+        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("arun.mudgal@sastechstudio.com", "7877632410");
+                return new PasswordAuthentication("arun.mudgal@sastechstudio.com", "Arun@1234");
             }
         });
-//		session.setDebug(true);
+
         session.setDebug(true);
         //step 2 : compose the message [text, multi media]
-        MimeMessage m = new MimeMessage(session);
+
         try {
             //from email
-            m.setFrom(from);
-            //adding recipient to message
-            m.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-
-            //adding subject to message
-            m.setSubject(subject);
-
-            //adding text to message
-            m.setText(message);
-
-
-            //send
-
-            //step 3 send the message using Transport class
-            Transport.send(m);
-
+            MimeMessage msg = new MimeMessage(session);
+            msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
+            msg.addHeader("format", "flowed");
+            msg.addHeader("Content-Transfer-Encoding", "8bit");
+            msg.setFrom(new InternetAddress("arun.mudgal@sastechstudio.com"));
+            msg.setReplyTo(InternetAddress.parse(to, true));
+            msg.setSubject(subject, "UTF-8");
+            msg.setSentDate(new Date());
+            msg.setText(message, "UTF-8", "html");
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, true));
+            Transport.send(msg);
             System.out.println("send success.............");
             //f = true;
 
@@ -85,7 +150,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
 
-    @Async
+    //    @Async
     public Future<Boolean> sendMailFromGmail(String emailRecipients, String emailSubject, String emailBody,
                                              List<String> fileName, List<byte[]> ba, String cc) {
         final String username = "AKIARGODPHJ4EXKUZOXQ";
@@ -141,5 +206,4 @@ public class EmailServiceImpl implements EmailService {
             return new AsyncResult<>(false);
         }
     }
-
 }
