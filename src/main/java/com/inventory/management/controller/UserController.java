@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RestController
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Response logInUser(@RequestBody LoginDto loginDto){
+    public Response logInUser(@RequestBody LoginDto loginDto) throws UnsupportedEncodingException {
         return userService.logInUser(loginDto);
     }
 
@@ -43,4 +44,10 @@ public class UserController {
     public Response deleteUser(@PathVariable Integer id){
         return userService.deleateUser(id);
     }
+
+    @PostMapping("/update")
+    public Response upadateUser(@RequestBody @Valid UserDto uderDto) throws Exception {
+        return userService.upadateUser(uderDto);
+    }
+
 }

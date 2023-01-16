@@ -9,6 +9,8 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDto {
 
     private Integer id;
@@ -16,7 +18,6 @@ public class UserDto {
     @NotEmpty(message = "name can't be null")
     private String name;
 
-//    @Email(message = "Email sholud be valid")
     @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
     private String email;
 

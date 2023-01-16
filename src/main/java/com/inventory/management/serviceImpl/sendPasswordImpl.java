@@ -13,14 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 public class sendPasswordImpl implements SendPasswordService {
 
     Random random = new Random(10000000);
-    UUID uuid = UUID.randomUUID();
-
 
     @Autowired
     EmailService emailService;
@@ -34,8 +31,6 @@ public class sendPasswordImpl implements SendPasswordService {
     @Override
     public Response sendPassword(String email) {
         User user = userRepository.findByEmail(email);
-//        int password = 0;
-//        password = random.nextInt(99999);
           int pass = generatePassword();
           User user1 = new User();
         if (user != null && user.getEmail().equalsIgnoreCase(email)) {
@@ -43,20 +38,25 @@ public class sendPasswordImpl implements SendPasswordService {
             String subject = "password from Inventory";
             String message = "password = " + pass;
             String to = email;
-            this.emailService.sendMailFromGmail(to,subject,subject,null,new ArrayList<>(),null);
-//            this.emailService.sendEmail(subject, message, to);
-//            SendPassword sendPassword = new SendPassword();
-//            sendPassword.setPassword(String.valueOf(pass));
-//            sendPassword.setEmail(user.getEmail());
-//            sendPasswordRepository.save(sendPassword);
+//            this.emailService.sendMailFromGmail(to,subject,message,null,new ArrayList<>(),null);
+            this.emailService.sendEmail(subject, message, to);   // this is for sendEmail method for ar code
+
+//             to save password into password_table;
+            SendPassword sendPassword = new SendPassword();
+            sendPassword.setPassword(String.valueOf(pass));
+            sendPassword.setEmail(user.getEmail());
+
+//            to save password into user_table;
+            sendPasswordRepository.save(sendPassword);
             user.setPassword(String.valueOf(pass));
             userRepository.save(user);
-            //return new Response(" verify Otp send Successfully on email ", user.getEmail(),HttpStatus.OK);
             return new Response("use password to login send Successfully on email ", user.getEmail(), HttpStatus.OK);
         }
         return new Response("email is not valid : ", email, HttpStatus.OK);
     }
 
+
+    //Generate Random Password.
     public int generatePassword(){
         int password=0;
         password = random.nextInt(999999);

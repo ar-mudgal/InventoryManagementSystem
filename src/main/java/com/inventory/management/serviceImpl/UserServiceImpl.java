@@ -11,11 +11,15 @@ import com.inventory.management.repository.UserRepository;
 import com.inventory.management.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.tags.form.OptionsTag;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESedeKeySpec;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.spec.KeySpec;
 import java.util.*;
 
 @Service
@@ -23,9 +27,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
-
-
-
 
     @Override
     public Response addUser(UserDto userDto, SendPasswordDto sendPasswordDto) {
@@ -92,13 +93,22 @@ public class UserServiceImpl implements UserService {
     @Autowired
     ObjectMapper mapper;
     @Override
-    public Response logInUser(LoginDto loginDto) {
+    public Response logInUser(LoginDto loginDto) throws UnsupportedEncodingException {
         Response response = new Response();
-       User user = userRepository.findByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
+//        Base64.Decoder decoder = Base64.getDecoder();
+        String encodedString = Base64.getEncoder().encodeToString(loginDto.getPassword().getBytes());
+
+        // Decoding string
+//        String dStr = new String(decoder.decode(loginDto.getPassword().getBytes(StandardCharsets.UTF_8)));
+
+        User user = userRepository.findByEmailAndPassword(loginDto.getEmail(), encodedString);
+//        User user = userRepository.findByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
        UserDto dto = new UserDto();
        if(user==null){
            return new Response("invalid credentials login id or password not match",HttpStatus.BAD_REQUEST);
        }
+        System.out.println(encodedString);
+        System.out.println("DataBase password : "+user.getPassword());
        dto.setId(user.getId());
        dto.setName(user.getName());
        dto.setPincode(user.getPincode());
@@ -129,10 +139,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Response> upadateUser(UserDto uderDto) {
-//        List<user> userList = new List<user>() {
-//        }
-        return null;
+    public Response upadateUser(UserDto uderDto) throws Exception {
+       Optional<User> userOptional = userRepository.findById(uderDto.getId());
+       if(userOptional.isPresent()){
+           User user = userOptional.get();
+           user.setName(uderDto.getName());
+           user.setAddress(uderDto.getAddress());
+           user.setGender(uderDto.getGender());
+           user.setEmail(uderDto.getEmail());
+           user.setMobile(uderDto.getMobile());
+           user.setPincode(uderDto.getPincode());
+
+           String encodedString = Base64.getEncoder().encodeToString(uderDto.getPassword().getBytes());
+
+//           String encryptedValue = Base64.encodeBase64String(encValue);
+           userRepository.save(user);
+           return new Response("user updated successfully", HttpStatus.OK);
+       }
+        return new Response("user not found for this id", uderDto.getId(),HttpStatus.BAD_REQUEST);
     }
 
 

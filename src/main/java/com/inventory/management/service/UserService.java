@@ -7,6 +7,7 @@ import com.inventory.management.dto.UserDto;
 import com.inventory.management.entity.User;
 import org.springframework.http.ResponseEntity;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public interface UserService {
@@ -17,9 +18,9 @@ public interface UserService {
 
     Response getById(Integer id);
 
-    Response logInUser(LoginDto loginDto);
+    Response logInUser(LoginDto loginDto) throws UnsupportedEncodingException;
 
     Response deleateUser(Integer id);
 
-    ResponseEntity<Response> upadateUser(UserDto uderDto);
+    Response upadateUser(UserDto uderDto) throws Exception;
 }
