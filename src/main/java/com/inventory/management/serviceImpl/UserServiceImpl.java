@@ -12,14 +12,7 @@ import com.inventory.management.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESedeKeySpec;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.security.spec.KeySpec;
 import java.util.*;
 
 @Service
@@ -117,7 +110,6 @@ public class UserServiceImpl implements UserService {
        dto.setPassword(user.getPassword());
        dto.setGender(user.getGender());
        dto.setEmail(user.getEmail());
-//       dto.setRole(user.getRole());
 
        try {
            mapper.writeValueAsString(dto);
@@ -149,10 +141,8 @@ public class UserServiceImpl implements UserService {
            user.setEmail(uderDto.getEmail());
            user.setMobile(uderDto.getMobile());
            user.setPincode(uderDto.getPincode());
-
            String encodedString = Base64.getEncoder().encodeToString(uderDto.getPassword().getBytes());
-
-//           String encryptedValue = Base64.encodeBase64String(encValue);
+           user.setPassword(encodedString);
            userRepository.save(user);
            return new Response("user updated successfully", HttpStatus.OK);
        }
