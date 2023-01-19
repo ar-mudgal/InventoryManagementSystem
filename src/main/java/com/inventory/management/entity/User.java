@@ -3,6 +3,8 @@ package com.inventory.management.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -45,6 +47,10 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role", referencedColumnName = "id")
     private Role role;
+
+    @Transient
+    private List<Rating> rating = new ArrayList<>();
+
 
 //    @OneToOne(cascade = CascadeType.ALL )
 //    @JoinColumn(insertable = true, updatable = true)

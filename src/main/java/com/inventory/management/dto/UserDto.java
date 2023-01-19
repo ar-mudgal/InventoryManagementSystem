@@ -1,5 +1,6 @@
 package com.inventory.management.dto;
 
+import com.inventory.management.entity.Rating;
 import com.inventory.management.entity.Role;
 import lombok.*;
 
@@ -7,6 +8,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -36,5 +39,7 @@ public class UserDto {
     private String pincode;
 
     private Role role;
+
+    private List<Rating> rating = new ArrayList<>();
 
 }

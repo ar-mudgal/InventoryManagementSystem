@@ -68,6 +68,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Response getById(Integer id) {
         Optional<User> userOptional = userRepository.findById(id);
+        if(!userOptional.isPresent()){
+            return  new Response("user not found for id {}", id,HttpStatus.BAD_REQUEST);
+        }
         UserDto dt = null;
         if (userOptional.isPresent()) {
             User user = userOptional.get();
