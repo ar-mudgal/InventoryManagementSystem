@@ -5,6 +5,7 @@ import com.inventory.management.config.Response;
 import com.inventory.management.dto.LoginDto;
 import com.inventory.management.dto.SendPasswordDto;
 import com.inventory.management.dto.UserDto;
+//import com.inventory.management.entity.Rating;
 import com.inventory.management.entity.Role;
 import com.inventory.management.entity.User;
 import com.inventory.management.repository.UserRepository;
@@ -12,6 +13,8 @@ import com.inventory.management.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+//import org.springframework.util.CollectionUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
@@ -53,13 +56,14 @@ public class UserServiceImpl implements UserService {
         List<User> usrList = userRepository.findAll();
         for(User ur : usrList){
             UserDto dto = new UserDto();
-            dto.setId(ur.getId());
+            dto.setUserId(ur.getUserId());
             dto.setName(ur.getName());
             dto.setMobile(ur.getMobile());
             dto.setGender(ur.getGender());
             dto.setEmail(ur.getEmail());
             dto.setAddress(ur.getAddress());
             dto.setPincode(ur.getPincode());
+            dto.setRating(ur.getRating());
             dtoList.add(dto);
         }
         return dtoList;
@@ -75,7 +79,7 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             dt = new UserDto();
-            dt.setId(user.getId());
+            dt.setUserId(user.getUserId());
             dt.setName(user.getName());
             dt.setEmail(user.getEmail());
             dt.setGender(user.getGender());
@@ -105,7 +109,7 @@ public class UserServiceImpl implements UserService {
        }
         System.out.println(encodedString);
         System.out.println("DataBase password : "+user.getPassword());
-       dto.setId(user.getId());
+       dto.setUserId(user.getUserId());
        dto.setName(user.getName());
        dto.setPincode(user.getPincode());
        dto.setAddress(user.getAddress());
@@ -135,7 +139,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response upadateUser(UserDto uderDto) throws Exception {
-       Optional<User> userOptional = userRepository.findById(uderDto.getId());
+       Optional<User> userOptional = userRepository.findById(uderDto.getUserId());
        if(userOptional.isPresent()){
            User user = userOptional.get();
            user.setName(uderDto.getName());
@@ -149,7 +153,20 @@ public class UserServiceImpl implements UserService {
            userRepository.save(user);
            return new Response("user updated successfully", HttpStatus.OK);
        }
-        return new Response("user not found for this id", uderDto.getId(),HttpStatus.BAD_REQUEST);
+        return new Response("user not found for this id", uderDto.getUserId(),HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public Response changePassword(UserDto userDto) {
+        Optional<User> userOptional = userRepository.findById(userDto.getUserId());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            String encodedString = Base64.getEncoder().encodeToString(userDto.getPassword().getBytes());
+            user.setPassword(encodedString);
+            userRepository.save(user);
+            return new Response("Password updated successfully",HttpStatus.OK);
+        }
+        return new Response("user not found for this id : ",HttpStatus.BAD_REQUEST);
     }
 
 

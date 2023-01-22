@@ -4,6 +4,7 @@ import com.inventory.management.config.Response;
 import com.inventory.management.dto.LoginDto;
 import com.inventory.management.dto.SendPasswordDto;
 import com.inventory.management.dto.UserDto;
+import com.inventory.management.repository.UserRepository;
 import com.inventory.management.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/addUser")
     Response addUser(@Valid @RequestBody UserDto userDto, SendPasswordDto sendPasswordDto){
@@ -48,6 +51,11 @@ public class UserController {
     @PostMapping("/update")
     public Response upadateUser(@RequestBody @Valid UserDto uderDto) throws Exception {
         return userService.upadateUser(uderDto);
+    }
+
+    @PutMapping("/changePassword")
+    public Response chnagePasswordgePassword(@RequestBody UserDto userDto){
+        return userService.changePassword(userDto);
     }
 
 }

@@ -23,4 +23,6 @@ public interface UserService {
     Response deleateUser(Integer id);
 
     Response upadateUser(UserDto uderDto) throws Exception;
+
+    Response changePassword(UserDto userDto);
 }

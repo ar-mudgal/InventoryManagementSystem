@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class UserDto {
 
-    private Integer id;
+    private Integer userId;
 
     @NotEmpty(message = "name can't be null")
     private String name;
