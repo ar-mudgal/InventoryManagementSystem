@@ -5,24 +5,29 @@ import com.inventory.management.config.Response;
 import com.inventory.management.dto.LoginDto;
 import com.inventory.management.dto.SendPasswordDto;
 import com.inventory.management.dto.UserDto;
-//import com.inventory.management.entity.Rating;
+import com.inventory.management.entity.Rating;
 import com.inventory.management.entity.Role;
 import com.inventory.management.entity.User;
 import com.inventory.management.repository.UserRepository;
 import com.inventory.management.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-//import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
     public Response addUser(UserDto userDto, SendPasswordDto sendPasswordDto) {
@@ -63,7 +68,6 @@ public class UserServiceImpl implements UserService {
             dto.setEmail(ur.getEmail());
             dto.setAddress(ur.getAddress());
             dto.setPincode(ur.getPincode());
-            dto.setRating(ur.getRating());
             dtoList.add(dto);
         }
         return dtoList;
@@ -86,6 +90,10 @@ public class UserServiceImpl implements UserService {
             dt.setMobile(user.getMobile());
             dt.setAddress(user.getAddress());
             dt.setPincode(user.getPincode());
+//            fetch ratings of the user from rating service
+            ArrayList<Rating> ratingOfUser = restTemplate.getForObject("http://localhost:9091/api/getByUserId/"+user.getUserId(), ArrayList.class);
+            log.info("Ratings invoked {} ", ratingOfUser);
+            dt.setRating(ratingOfUser);
         }
         return new Response("user fond successfully", dt,HttpStatus.OK);
     }
@@ -169,26 +177,4 @@ public class UserServiceImpl implements UserService {
         return new Response("user not found for this id : ",HttpStatus.BAD_REQUEST);
     }
 
-
-    private static char[] generatePassword(int length) {
-        String capitalCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
-        String specialCharacters = "!@#$";
-        String numbers = "1234567890";
-        String combinedChars = capitalCaseLetters + lowerCaseLetters + specialCharacters + numbers;
-        Random random = new Random();
-        char[] password = new char[length];
-
-        password[0] = lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length()));
-        password[1] = capitalCaseLetters.charAt(random.nextInt(capitalCaseLetters.length()));
-        password[2] = specialCharacters.charAt(random.nextInt(specialCharacters.length()));
-        password[3] = numbers.charAt(random.nextInt(numbers.length()));
-
-        for (int i = 4; i < length; i++) {
-            password[i] = combinedChars.charAt(random.nextInt(combinedChars.length()));
-        }
-        return password;
-
-    }
-
-    }
+}

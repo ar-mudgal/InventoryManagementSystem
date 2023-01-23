@@ -14,7 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -22,13 +22,13 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/addUser")
+    @PostMapping("/add")
     Response addUser(@Valid @RequestBody UserDto userDto, SendPasswordDto sendPasswordDto){
 
         return userService.addUser(userDto,sendPasswordDto);
     }
 
-    @GetMapping("getUser")
+    @GetMapping("/all")
     public List<UserDto> fethAll(UserDto userDto){
         return userService.fethAll(userDto);
     }
