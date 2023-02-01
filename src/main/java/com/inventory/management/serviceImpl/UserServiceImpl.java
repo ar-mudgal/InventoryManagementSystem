@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
             dt.setAddress(user.getAddress());
             dt.setPincode(user.getPincode());
 //            fetch ratings of the user from rating service
-            ArrayList<Rating> ratingOfUser = restTemplate.getForObject("http://localhost:9091/api/getByUserId/"+user.getUserId(), ArrayList.class);
+            ArrayList<Rating> ratingOfUser = restTemplate.getForObject("http://RATING-SERVICE/rating/getByUserId/"+user.getUserId(), ArrayList.class);
             log.info("Ratings invoked {} ", ratingOfUser);
             dt.setRating(ratingOfUser);
         }
