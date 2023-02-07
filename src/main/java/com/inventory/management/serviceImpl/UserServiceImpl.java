@@ -73,6 +73,8 @@ public class UserServiceImpl implements UserService {
         return dtoList;
     }
 
+
+    //find user by id
     @Override
     public Response getById(Integer id) {
         Optional<User> userOptional = userRepository.findById(id);
