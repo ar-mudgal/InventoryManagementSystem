@@ -33,8 +33,8 @@ public class UserController {
         return userService.fethAll(userDto);
     }
 
-    @GetMapping("/getById/{id}")
-    public Response getById(@PathVariable Integer id){
+    @GetMapping("/getById")
+    public Response getById(@RequestParam Integer id){
         return userService.getById(id);
     }
 

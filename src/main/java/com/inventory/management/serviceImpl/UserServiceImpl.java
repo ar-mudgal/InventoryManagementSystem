@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         user.setMobile(userDto.getMobile());
         user.setGender(userDto.getGender());
         user.setPincode(userDto.getPincode());
-        user.setPassword(sendPasswordDto.getPassword());
+        user.setPassword(sendPasswordDto.getPassword());   //sended password added in user table
         user.setAddress(userDto.getAddress());
         user.setRole(role);
         userRepository.save(user);
@@ -68,6 +68,9 @@ public class UserServiceImpl implements UserService {
             dto.setEmail(ur.getEmail());
             dto.setAddress(ur.getAddress());
             dto.setPincode(ur.getPincode());
+//            ArrayList<Rating> ratingOfUser = restTemplate.getForObject("http://localhost:9091/rating/getByUserId/"+ur.getUserId(), ArrayList.class);
+//            log.info("Ratings invoked {} ", ratingOfUser);
+//            dto.setRating(ratingOfUser);
             dtoList.add(dto);
         }
         return dtoList;
@@ -92,10 +95,11 @@ public class UserServiceImpl implements UserService {
             dt.setMobile(user.getMobile());
             dt.setAddress(user.getAddress());
             dt.setPincode(user.getPincode());
+            dt.setPassword(user.getPassword());
 //            fetch ratings of the user from rating service
-            ArrayList<Rating> ratingOfUser = restTemplate.getForObject("http://RATING-SERVICE/rating/getByUserId/"+user.getUserId(), ArrayList.class);
-            log.info("Ratings invoked {} ", ratingOfUser);
-            dt.setRating(ratingOfUser);
+//            ArrayList<Rating> ratingOfUser = restTemplate.getForObject("http://localhost:9091/rating/getByUserId/"+user.getUserId(), ArrayList.class);
+//            log.info("Ratings invoked {} ", ratingOfUser);
+//            dt.setRating(ratingOfUser);
         }
         return new Response("user fond successfully", dt,HttpStatus.OK);
     }
@@ -117,8 +121,8 @@ public class UserServiceImpl implements UserService {
        if(user==null){
            return new Response("invalid credentials login id or password not match",HttpStatus.BAD_REQUEST);
        }
-        System.out.println(encodedString);
-        System.out.println("DataBase password : "+user.getPassword());
+//        System.out.println(encodedString);
+//        System.out.println("DataBase password : "+user.getPassword());
        dto.setUserId(user.getUserId());
        dto.setName(user.getName());
        dto.setPincode(user.getPincode());
