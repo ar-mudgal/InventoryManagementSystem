@@ -4,6 +4,7 @@ import com.inventory.management.config.Response;
 import com.inventory.management.dto.LoginDto;
 import com.inventory.management.dto.SendPasswordDto;
 import com.inventory.management.dto.UserDto;
+import com.inventory.management.entity.User;
 import com.inventory.management.repository.UserRepository;
 import com.inventory.management.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,5 +58,22 @@ public class UserController {
     public Response chnagePasswordgePassword(@RequestBody UserDto userDto){
         return userService.changePassword(userDto);
     }
+
+//    @RequestMapping(name = "/pagingAndSortingUser",method = RequestMethod.GET)
+    @GetMapping("/pagingAndSortingUser")
+    public List<User> getDataforPaging(@RequestParam Integer pageNo, @RequestParam Integer pageSize)
+    {
+        return  userService.getDataforPaging(pageNo,pageSize).getContent();
+    }
+
+    @GetMapping("/Hello")
+    public String Wlocome()
+    {
+        String text = "this page is not accessable ";
+        text+= "this a an authrised page";
+        return  text;
+    }
+
+
 
 }

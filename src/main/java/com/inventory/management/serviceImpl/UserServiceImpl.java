@@ -12,6 +12,9 @@ import com.inventory.management.repository.UserRepository;
 import com.inventory.management.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -50,6 +53,7 @@ public class UserServiceImpl implements UserService {
         user.setPincode(userDto.getPincode());
         user.setPassword(sendPasswordDto.getPassword());   //sended password added in user table
         user.setAddress(userDto.getAddress());
+//        user.setRole((Set<Role>) role);
         user.setRole(role);
         userRepository.save(user);
         return new Response("User added successfully", HttpStatus.OK);
@@ -96,6 +100,14 @@ public class UserServiceImpl implements UserService {
             dt.setAddress(user.getAddress());
             dt.setPincode(user.getPincode());
             dt.setPassword(user.getPassword());
+            Role role = new Role();
+//            for(Role user1 : user.getRole()){
+                role.setUser(user.getRole().getUser());
+                role.setAdmin(user.getRole().getAdmin());
+                role.setId(user.getRole().getId());
+//            }
+            dt.setRole(role);
+
 //            fetch ratings of the user from rating service
 //            ArrayList<Rating> ratingOfUser = restTemplate.getForObject("http://localhost:9091/rating/getByUserId/"+user.getUserId(), ArrayList.class);
 //            log.info("Ratings invoked {} ", ratingOfUser);
@@ -181,6 +193,13 @@ public class UserServiceImpl implements UserService {
             return new Response("Password updated successfully",HttpStatus.OK);
         }
         return new Response("user not found for this id : ",HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public Page<User> getDataforPaging(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+
+        return  userRepository.findAll(pageable);
     }
 
 }

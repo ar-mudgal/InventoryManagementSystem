@@ -1,5 +1,6 @@
 package com.inventory.management.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Role {
 
     @Id

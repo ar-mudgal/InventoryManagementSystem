@@ -5,6 +5,7 @@ import com.inventory.management.dto.LoginDto;
 import com.inventory.management.dto.SendPasswordDto;
 import com.inventory.management.dto.UserDto;
 import com.inventory.management.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.io.UnsupportedEncodingException;
@@ -25,4 +26,6 @@ public interface UserService {
     Response upadateUser(UserDto uderDto) throws Exception;
 
     Response changePassword(UserDto userDto);
+
+    Page<User> getDataforPaging(Integer pageNo, Integer pageSize);
 }

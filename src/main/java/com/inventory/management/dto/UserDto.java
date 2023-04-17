@@ -1,5 +1,6 @@
 package com.inventory.management.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.inventory.management.entity.Rating;
 import com.inventory.management.entity.Role;
 import lombok.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
 
     private Integer userId;

@@ -1,10 +1,11 @@
 package com.inventory.management.entity;
 
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
@@ -47,8 +48,8 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role", referencedColumnName = "id")
-    private Role role;
-
+//    private Set<Role> role = new HashSet<>();
+    private Role role = new Role();
     @Transient
     private List<Rating> rating = new ArrayList<>();
 
