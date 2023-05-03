@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -30,7 +31,8 @@ public class sendPasswordImpl implements SendPasswordService {
 
     @Override
     public Response sendPassword(String email) {
-        User user = userRepository.findByEmail(email);
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        User user = userOptional.get();
           int pass = generatePassword();
           User user1 = new User();
         if (user != null && user.getEmail().equalsIgnoreCase(email)) {
@@ -57,7 +59,7 @@ public class sendPasswordImpl implements SendPasswordService {
 
 
     //Generate Random Password.
-    public int generatePassword(){
+    private int generatePassword(){
         int password=0;
         password = random.nextInt(999999);
         return password;

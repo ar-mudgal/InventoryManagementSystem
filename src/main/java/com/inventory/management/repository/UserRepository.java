@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Integer> {
@@ -14,7 +15,13 @@ public interface UserRepository extends JpaRepository<User,Integer> {
 //    @Query(value = "select * from project_db.rating_table r inner join project_db2.user_table u on r.user_id = u.id", nativeQuery = true)
 //    List<Object[]> findByUserId();
 
-    User findByEmail(String emial);
+    Optional<User> findByEmail(String emial);
+
+//    User findByEmail(String email);
 
     User findByEmailAndPassword(String email, String password);
+
+    List<User> findByMobile(String userName);
+
+    User findByMobileAndPassword(String mobile, String password);
 }

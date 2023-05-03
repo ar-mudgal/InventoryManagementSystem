@@ -5,7 +5,6 @@ import com.inventory.management.config.Response;
 import com.inventory.management.dto.LoginDto;
 import com.inventory.management.dto.SendPasswordDto;
 import com.inventory.management.dto.UserDto;
-import com.inventory.management.entity.Rating;
 import com.inventory.management.entity.Role;
 import com.inventory.management.entity.User;
 import com.inventory.management.repository.UserRepository;
@@ -17,10 +16,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response addUser(UserDto userDto, SendPasswordDto sendPasswordDto) {
-        Optional<User> userOptional = Optional.ofNullable(userRepository.findByEmail(userDto.getEmail()));
+        Optional<User> userOptional = userRepository.findByEmail(userDto.getEmail());
         if(userOptional.isPresent()){
             try {
                 throw new Exception("User already exist");
@@ -121,20 +122,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public Response logInUser(LoginDto loginDto) throws UnsupportedEncodingException {
         Response response = new Response();
-//        Base64.Decoder decoder = Base64.getDecoder();
         String encodedString = Base64.getEncoder().encodeToString(loginDto.getPassword().getBytes());
+        Optional<User> email = userRepository.findByEmail(loginDto.getUserName());
+        List<User> mob = userRepository.findByMobile(loginDto.getUserName());
+        User user = null;
+        if(email.isPresent()) {
+            user = userRepository.findByEmailAndPassword(loginDto.getUserName(), encodedString);
+        }
+        if (!CollectionUtils.isEmpty(mob)) {
+            List<String > mobiles = mob.stream().map(User::getMobile).collect(Collectors.toList());
+            for(String mobile : mobiles) {
+                user = userRepository.findByMobileAndPassword(mobile, encodedString);
+                if(user != null) {
+                    break;
+                }
+            }
+        }
 
-        // Decoding string
-//        String dStr = new String(decoder.decode(loginDto.getPassword().getBytes(StandardCharsets.UTF_8)));
-
-        User user = userRepository.findByEmailAndPassword(loginDto.getEmail(), encodedString);
-//        User user = userRepository.findByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
        UserDto dto = new UserDto();
        if(user==null){
            return new Response("invalid credentials login id or password not match",HttpStatus.BAD_REQUEST);
        }
-//        System.out.println(encodedString);
-//        System.out.println("DataBase password : "+user.getPassword());
        dto.setUserId(user.getUserId());
        dto.setName(user.getName());
        dto.setPincode(user.getPincode());
