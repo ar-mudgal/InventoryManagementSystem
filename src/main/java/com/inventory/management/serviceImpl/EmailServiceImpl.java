@@ -43,7 +43,7 @@ public class EmailServiceImpl implements EmailService {
         props.put("mail.smtp.ssl.protocols", "TLSv1.2");
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("arun.mudgal@sastechstudio.com", "Arun@1234");
+                return new PasswordAuthentication("arun.mudgal@sastechstudio.com", "******");
             }
         });
 
@@ -51,7 +51,7 @@ public class EmailServiceImpl implements EmailService {
         javax.mail.Session sessio = javax.mail.Session.getInstance(properties, new Authenticator() {
             @Override
             protected javax.mail.PasswordAuthentication getPasswordAuthentication(){
-                return new javax.mail.PasswordAuthentication("arun.mudgal@sastechstudio.com", "Arun@1234");
+                return new javax.mail.PasswordAuthentication("arun.mudgal@sastechstudio.com", "******");
             }
         });
 

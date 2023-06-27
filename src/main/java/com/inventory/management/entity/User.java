@@ -6,11 +6,11 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 @Table(name="user_table")
 public class User {
     @Id
@@ -44,20 +44,12 @@ public class User {
     @Column(name="pin_code")
     private String pincode;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "role", referencedColumnName = "id")
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "user")
 //    private Set<Role> role = new HashSet<>();
     private Role role = new Role();
+
     @Transient
     private List<Rating> rating = new ArrayList<>();
-
-
-//    @OneToOne(cascade = CascadeType.ALL )
-//    @JoinColumn(insertable = true, updatable = true)
-//    private SendPassword sendPasswordpass;
-
-//    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-//    @JoinColumn(name="password", insertable = false, updatable = false)
-//    private SendPassword sendPassword;
 
 }

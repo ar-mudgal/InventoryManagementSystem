@@ -61,9 +61,10 @@ public class UserController {
 
 //    @RequestMapping(name = "/pagingAndSortingUser",method = RequestMethod.GET)
     @GetMapping("/pagingAndSortingUser")
-    public List<User> getDataforPaging(@RequestParam Integer pageNo, @RequestParam Integer pageSize)
+    public List<User> getDataforPaging(@RequestParam(defaultValue = "0") Integer pageNo,
+                                       @RequestParam(defaultValue = "10") Integer pageSize)
     {
-        return  userService.getDataforPaging(pageNo,pageSize).getContent();
+        return  userService.getDataforPaging(pageNo,pageSize);
     }
 
     @GetMapping("/Hello")

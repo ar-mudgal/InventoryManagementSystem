@@ -27,5 +27,5 @@ public interface UserService {
 
     Response changePassword(UserDto userDto);
 
-    Page<User> getDataforPaging(Integer pageNo, Integer pageSize);
+    List<User> getDataforPaging(Integer pageNo, Integer pageSize);
 }

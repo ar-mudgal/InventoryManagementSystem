@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -44,18 +45,9 @@ public class UserServiceImpl implements UserService {
             }
         }
         Role role = new Role();
-        role.setUser(userDto.getRole().getUser());
-        role.setAdmin(userDto.getRole().getAdmin());
-        User user = new User();
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        user.setMobile(userDto.getMobile());
-        user.setGender(userDto.getGender());
-        user.setPincode(userDto.getPincode());
-        user.setPassword(sendPasswordDto.getPassword());   //sended password added in user table
-        user.setAddress(userDto.getAddress());
-//        user.setRole((Set<Role>) role);
-        user.setRole(role);
+        role.setRoleName(userDto.getRole().getRoleName());
+        User user=User.builder().email(userDto.getEmail()).gender(userDto.getGender()).role(role).address(userDto.getAddress()).pincode(userDto.getPincode()).name(userDto.getName()).password(sendPasswordDto.getPassword()).mobile(userDto.getMobile()).build();
+        role.setUser(user);
         userRepository.save(user);
         return new Response("User added successfully", HttpStatus.OK);
     }
@@ -63,7 +55,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> fethAll(UserDto userDto){
         List<UserDto> dtoList = new ArrayList<>();
-        List<User> usrList = userRepository.findAll();
+        List<User> usrList = userRepository.findAll(Sort.by("LENGTH(userDto.getUserName)"));
         for(User ur : usrList){
             UserDto dto = new UserDto();
             dto.setUserId(ur.getUserId());
@@ -92,6 +84,7 @@ public class UserServiceImpl implements UserService {
         UserDto dt = null;
         if (userOptional.isPresent()) {
             User user = userOptional.get();
+//            UserDto.builder().userId(user.getUserId()).address(user.getAddress()).email(user.getEmail()).gender(user.getGender()).mobile(user.getMobile()).name(user.getName()).pincode(user.getPincode()).password(user.getPassword()).build();
             dt = new UserDto();
             dt.setUserId(user.getUserId());
             dt.setName(user.getName());
@@ -103,11 +96,11 @@ public class UserServiceImpl implements UserService {
             dt.setPassword(user.getPassword());
             Role role = new Role();
 //            for(Role user1 : user.getRole()){
-                role.setUser(user.getRole().getUser());
-                role.setAdmin(user.getRole().getAdmin());
-                role.setId(user.getRole().getId());
+//                role.setUser(user1.getUser());
+//                role.setRoleName(user1.getRoleName());
+////                role.setRole_id(user1.getRole_id());
 //            }
-            dt.setRole(role);
+            dt.setRole(user.getRole());
 
 //            fetch ratings of the user from rating service
 //            ArrayList<Rating> ratingOfUser = restTemplate.getForObject("http://localhost:9091/rating/getByUserId/"+user.getUserId(), ArrayList.class);
@@ -176,6 +169,7 @@ public class UserServiceImpl implements UserService {
        Optional<User> userOptional = userRepository.findById(uderDto.getUserId());
        if(userOptional.isPresent()){
            User user = userOptional.get();
+//           user.builder().name(uderDto.getName()).address(uderDto.getAddress()).gender(uderDto.getGender()).email(uderDto.getEmail()).password(encodedString).mobile(uderDto.getMobile()).pincode(uderDto.getPincode()).build();
            user.setName(uderDto.getName());
            user.setAddress(uderDto.getAddress());
            user.setGender(uderDto.getGender());
@@ -184,6 +178,10 @@ public class UserServiceImpl implements UserService {
            user.setPincode(uderDto.getPincode());
            String encodedString = Base64.getEncoder().encodeToString(uderDto.getPassword().getBytes());
            user.setPassword(encodedString);
+           Role role = new Role();
+           role.setRoleName(uderDto.getRole().getRoleName());
+           role.setUser(user);
+           user.setRole(role);
            userRepository.save(user);
            return new Response("user updated successfully", HttpStatus.OK);
        }
@@ -203,11 +201,16 @@ public class UserServiceImpl implements UserService {
         return new Response("user not found for this id : ",HttpStatus.BAD_REQUEST);
     }
 
+    //get All users by using pagination and without pagination.
     @Override
-    public Page<User> getDataforPaging(Integer pageNo, Integer pageSize) {
+    public List<User> getDataforPaging(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo,pageSize);
-
-        return  userRepository.findAll(pageable);
+        Page<User> pagedUsers = userRepository.findAll(pageable);
+        if (pagedUsers.hasContent()){
+            return pagedUsers.getContent();
+        }else {
+            return  new ArrayList<>();
+        }
     }
 
 }
