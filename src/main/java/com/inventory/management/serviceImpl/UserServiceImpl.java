@@ -194,14 +194,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response changePassword(UserDto userDto) {
+        log.info("request to change password invoked successfully for user id -{}",userDto.getUserId());
         Optional<User> userOptional = userRepository.findById(userDto.getUserId());
         if(userOptional.isPresent()){
             User user = userOptional.get();
             String encodedString = Base64.getEncoder().encodeToString(userDto.getPassword().getBytes());
             user.setPassword(encodedString);
             userRepository.save(user);
+            log.info("password updated successfully");
             return new Response("Password updated successfully",HttpStatus.OK);
         }
+        log.info("user not found for id -{}",userDto.getUserId());
         return new Response("user not found for this id : ",HttpStatus.BAD_REQUEST);
     }
 
@@ -211,19 +214,23 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         Page<User> pagedUsers = userRepository.findAll(pageable);
         if (pagedUsers.hasContent()){
+            log.info("data get successfully with pagination");
             return pagedUsers.getContent();
         }else {
+            log.info("data get successfully without pagination");
             return  new ArrayList<>();
         }
     }
 
     @Override
     public List<User> getUsers(String name) {
-        List<User>  usersList = new ArrayList<>();
+        log.info("request to getUser method initiated successfully");
         List<User> users = userRepository.findByName(name);
         if(!CollectionUtils.isEmpty(users)){
+            log.info("get successfully user list by name wise and name ->{}",name);
             return users;
         }
+        log.info("get all user list successfully");
         return userRepository.findAll();
     }
 
@@ -233,6 +240,7 @@ public class UserServiceImpl implements UserService {
         if(CollectionUtils.isEmpty(users)){
             throw new Exception(HttpStatus.BAD_REQUEST.toString());
         }
+        log.info("get all users by name wise successfully");
         return users;
     }
 
