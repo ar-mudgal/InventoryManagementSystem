@@ -29,7 +29,7 @@ public interface UserService {
 
     List<User> getDataforPaging(Integer pageNo, Integer pageSize);
 
-    List<User> getUsers(String name);
+    Response getUsers(String name);
 
-    List<?> findByName(String name) throws Exception;
+    Response findByName(String name) throws Exception;
 }

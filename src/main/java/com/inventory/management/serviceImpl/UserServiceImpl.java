@@ -38,6 +38,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RestTemplate restTemplate;
 
+    public static final String SUCCESS = "SUCCESS";
+
     @Override
     public Response addUser(UserDto userDto, SendPasswordDto sendPasswordDto) {
         Optional<User> userOptional = userRepository.findByEmail(userDto.getEmail());
@@ -223,25 +225,37 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsers(String name) {
+    public Response getUsers(String name) {
+        Response response = new Response();
         log.info("request to getUser method initiated successfully");
         List<User> users = userRepository.findByName(name);
         if(!CollectionUtils.isEmpty(users)){
             log.info("get successfully user list by name wise and name ->{}",name);
-            return users;
+            response = Response.builder().code(HttpStatus.OK.value()).message(SUCCESS)
+                    .status(HttpStatus.OK).responseObject(users).build();
+            return response;
+        }
+        else {
+            response = Response.builder().code(HttpStatus.BAD_REQUEST.value()).message("User not found").status(HttpStatus.BAD_REQUEST).build();
         }
         log.info("get all user list successfully");
-        return userRepository.findAll();
+        return (response = Response.builder().code(HttpStatus.OK.value()).message(SUCCESS)
+                        .status(HttpStatus.OK).responseObject(userRepository.findAll()).build());
     }
 
     @Override
-    public List<?> findByName(String name) throws Exception {
+    public Response findByName(String name) throws Exception {
+        Response response = new Response();
         List<User> users = userRepository.findByName(name);
         if(CollectionUtils.isEmpty(users)){
-            throw new Exception(HttpStatus.BAD_REQUEST.toString());
+            response = Response.builder().code(HttpStatus.BAD_REQUEST.value()).message("User not found")
+                    .status(HttpStatus.BAD_REQUEST).build();
+            return response;
         }
         log.info("get all users by name wise successfully");
-        return users;
+        response = Response.builder().code(HttpStatus.OK.value()).message(SUCCESS)
+                .status(HttpStatus.OK).responseObject(users).build();
+        return response;
     }
 
 }
