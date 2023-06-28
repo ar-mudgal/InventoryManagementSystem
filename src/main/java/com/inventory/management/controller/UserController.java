@@ -76,5 +76,19 @@ public class UserController {
     }
 
 
+    //get user list with name wise filer or all without passing name
+    @GetMapping("/users")
+    public List<User> getUsers(@RequestParam(required = false) String name){
+      return userService.getUsers(name);
+    }
+
+
+    //get user list by name wise filer
+    @GetMapping("/findByName")
+    public List<?> findByName(@RequestParam (required = true) String name) throws Exception {
+        return  userService.findByName(name);
+    }
+
+
 
 }

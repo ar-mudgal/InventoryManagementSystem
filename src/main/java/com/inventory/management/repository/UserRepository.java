@@ -3,6 +3,7 @@ package com.inventory.management.repository;
 import com.inventory.management.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 //import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,4 +25,7 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     List<User> findByMobile(String userName);
 
     User findByMobileAndPassword(String mobile, String password);
+
+    @Query(value = "select * from user_table where user_name =?1",nativeQuery = true)
+    List<User> findByName(String name);
 }

@@ -7,6 +7,7 @@ import com.inventory.management.dto.SendPasswordDto;
 import com.inventory.management.dto.UserDto;
 import com.inventory.management.entity.Role;
 import com.inventory.management.entity.User;
+import com.inventory.management.repository.RoleRepository;
 import com.inventory.management.repository.UserRepository;
 import com.inventory.management.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
@@ -27,6 +29,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -211,6 +215,25 @@ public class UserServiceImpl implements UserService {
         }else {
             return  new ArrayList<>();
         }
+    }
+
+    @Override
+    public List<User> getUsers(String name) {
+        List<User>  usersList = new ArrayList<>();
+        List<User> users = userRepository.findByName(name);
+        if(!CollectionUtils.isEmpty(users)){
+            return users;
+        }
+        return userRepository.findAll();
+    }
+
+    @Override
+    public List<?> findByName(String name) throws Exception {
+        List<User> users = userRepository.findByName(name);
+        if(CollectionUtils.isEmpty(users)){
+            throw new Exception(HttpStatus.BAD_REQUEST.toString());
+        }
+        return users;
     }
 
 }

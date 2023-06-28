@@ -28,4 +28,8 @@ public interface UserService {
     Response changePassword(UserDto userDto);
 
     List<User> getDataforPaging(Integer pageNo, Integer pageSize);
+
+    List<User> getUsers(String name);
+
+    List<?> findByName(String name) throws Exception;
 }
